@@ -8,8 +8,7 @@ module.exports = new Sequelize(...Object.values(database), {
   dialect: 'postgres',
   protocol: 'postgres',
   dialectOptions: {
-    ssl: true,
-    rejectUnauthorized: false
+    ssl: true
   },
   logging: env.isProd ? false : query,
   define: {
