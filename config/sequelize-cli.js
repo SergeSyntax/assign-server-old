@@ -7,7 +7,8 @@ const connection = {
   host: databaseHost,
   protocol: 'postgres',
   dialectOptions: {
-    ssl: true
+    ssl: true,
+    rejectUnauthorized: false
   }
 };
 
