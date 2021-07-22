@@ -6,8 +6,12 @@ const { query } = require('../utils/log');
 module.exports = new Sequelize(...Object.values(database), {
   host: databaseHost,
   dialect: 'postgres',
+  protocol: 'postgres',
+  dialectOptions: {
+    ssl: true
+  },
   logging: env.isProd ? false : query,
   define: {
-    underscored: true,
-  },
+    underscored: true
+  }
 });

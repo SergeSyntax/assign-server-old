@@ -5,11 +5,14 @@ const connection = {
   ...database,
   dialect: 'postgres',
   host: databaseHost,
-
+  protocol: 'postgres',
+  dialectOptions: {
+    ssl: true
+  }
 };
 
 module.exports = {
   development: connection,
   test: connection,
-  production: connection,
+  production: connection
 };
