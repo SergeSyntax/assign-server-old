@@ -1,11 +1,20 @@
 const app = require('express')();
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+// eslint-disable-next-line import/order
+const { PORT, clientUrl, env } = require('./config/env');
+
+const io = require('socket.io')(server, {
+  cors: {
+    origin: clientUrl,
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['*'],
+    credentials: true
+  }
+});
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
 const cors = require('cors');
-const { PORT, clientUrl, env } = require('./config/env');
 const { failure, success } = require('./utils/log');
 const routes = require('./routes');
 const database = require('./config/database');
@@ -15,7 +24,12 @@ const passportService = require('./services/passport');
 
 const MAX_BYTES = 52428800;
 
-const CORS_OPTIONS = ;
+const CORS_OPTIONS = {
+  origin: clientUrl,
+  exposedHeaders: ['*'],
+  allowedHeaders: ['*'],
+  credentials: true
+};
 
 /**
  * log the error description and exit the application
@@ -43,19 +57,8 @@ module.exports = (async () => {
   if (env.isDev) app.use(morgan('dev')); // setup morgan logger
   app.use(express.json({ limit: MAX_BYTES })); // json body parser
   app.use(express.static(path.join(__dirname, 'public'))); // static files parser
-  app.use(cors({
-  origin: clientUrl,
-  preflightContinue: true,
-  exposedHeaders: ['*'],
-  allowedHeaders: ['*'],
-  credentials: true,
-})); // allow cors origin
-  app.options('*', cors({
-  origin: clientUrl,
-  exposedHeaders: ['*'],
-  allowedHeaders: ['*'],
-  credentials: true,
-})); // allow cors origin for option request
+  app.use(cors(CORS_OPTIONS)); // allow cors origin
+  app.options('*', cors(CORS_OPTIONS)); // allow cors origin for option request
   app.use('/api/v1', routes); // rest api routes
   app.use('*', notFound); // page not found error handler
   app.use(errorHandler); // error handler
