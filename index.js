@@ -1,20 +1,11 @@
 const app = require('express')();
 const server = require('http').createServer(app);
-// eslint-disable-next-line import/order
-const { PORT, clientUrl, env } = require('./config/env');
-
-const io = require('socket.io')(server, {
-  cors: {
-    origin: clientUrl,
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['*'],
-    credentials: true
-  }
-});
+const io = require('socket.io')(server);
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
 const cors = require('cors');
+const { PORT, clientUrl, env } = require('./config/env');
 const { failure, success } = require('./utils/log');
 const routes = require('./routes');
 const database = require('./config/database');
@@ -26,8 +17,8 @@ const MAX_BYTES = 52428800;
 
 const CORS_OPTIONS = {
   origin: clientUrl,
-  exposedHeaders: ['*'],
-  allowedHeaders: ['*'],
+  exposedHeaders: ['Content-Type', 'Authorization', 'socketId'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'socketId'],
   credentials: true
 };
 
